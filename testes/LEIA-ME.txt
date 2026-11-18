@@ -1,0 +1,9 @@
+Testes (Playwright + Chromium)
+
+O jogo carrega o Three.js de CDN. Para testar offline, baixe o pacote e aponte THREE_DIR:
+  npm pack three@0.128.0 && tar xzf three-0.128.0.tgz   (cria ./package)
+  THREE_DIR=$PWD/package/ node -r ./pw3d.js fluxo.js
+  THREE_DIR=$PWD/package/ node -r ./pw3d.js robo_torre.js 0,1,2,3,4,5,6,7
+
+pw3d.js liga WebGL por software e serve o Three.js local.
+robo_torre.js imprime, por andar: vitória, tempo, estatísticas, nota e o progresso salvo.

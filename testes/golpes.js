@@ -1,0 +1,16 @@
+const {chromium}=require('playwright');require('./pw3d.js');
+(async()=>{const b=await chromium.launch();const pg=await b.newPage({viewport:{width:1280,height:800}});const errs=[];pg.on('pageerror',e=>errs.push(e.message+' @'+(e.stack||'').split('\n').slice(1,3).join('|')));pg.on('console',m=>{if(m.type()==='error')errs.push(m.text().slice(0,200))});
+await pg.goto('file:///home/user/pancadaria/index.html');await pg.waitForTimeout(1000);
+const r=await pg.evaluate(()=>{startFight({boss:'kara',arena:'ceu',lvl:3,skipIntro:true});const fi=game.fight,P=fi.P,B=fi.B;B.guardP=0;B.evadeP=0;B.deflP=0;
+  const run=(n,keys=[])=>{for(let i=0;i<n;i++){B.cool=999;if(B.state==='atk'){B.atk=null;B.set('idle');}for(const k of keys)KEYS.add(k);step();}for(const k of keys)KEYS.delete(k);};
+  const reset=d=>{P.set('idle');P.atk=null;P.combo=0;B.set('idle');B.hp=B.hpMax;B.post=0;P.x=0;P.z=d;B.x=0;B.z=0;P.h=Math.PI;run(3);};
+  const used=[];const S0=P.startMove.bind(P);P.startMove=(m,o)=>{for(const k in P.moves)if(P.moves[k]===m)used.push(k);if(P.moves.light.includes(m))used.push('L'+P.moves.light.indexOf(m));return S0(m,o);};
+  const o={};
+  reset(400);KEYS.add('KeyW');run(4);EDGE.set('KeyJ',game.tick+1);run(30,['KeyW']);o.fwd=[used.slice(-1)[0],Math.round(400-Math.hypot(P.x,P.z))];
+  reset(150);EDGE.set('KeyJ',game.tick+1);run(30,['KeyS']);o.back=[used.slice(-1)[0],Math.round(Math.hypot(P.x,P.z))];
+  reset(150);EDGE.set('KeyJ',game.tick+1);run(30,['KeyD']);o.side=used.slice(-1)[0];
+  reset(140);for(let i=0;i<3;i++){EDGE.set(i<2?'KeyJ':'KeyK',game.tick+1);run(16);}run(50);o.fin=used.slice(-3);
+  reset(140);for(let i=0;i<3;i++){EDGE.set('KeyK',game.tick+1);run(28);}run(80);o.heavy=used.slice(-3);o.waves=fi.stats.hits;
+  reset(140);EDGE.set('Space',game.tick+1);run(6);for(let i=0;i<3;i++){EDGE.set('KeyJ',game.tick+1);run(14);}run(60);o.air=used.slice(-3);
+  o.bossMoves=Object.keys(B.moveset);return o;});
+console.log(JSON.stringify(r));console.log(errs);await b.close();})();
